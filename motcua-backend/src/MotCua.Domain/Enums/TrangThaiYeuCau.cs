@@ -6,5 +6,6 @@ public enum TrangThaiYeuCau
     MOT_CUA_NHAN = 2,
     MOT_CUA_DANG_XU_LY = 3,
     CAN_BO_SUNG = 4,
-    DA_HOAN_THANH = 5
+    DA_HOAN_THANH = 5,
+    DA_BO_SUNG = 6
 }

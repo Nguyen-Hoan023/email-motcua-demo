@@ -1,3 +1,5 @@
+// ĐỊNH NGHĨA CẤU TRÚC BẢNG VÀ KẾT NỐI SQL
+
 using Microsoft.EntityFrameworkCore;
 using MotCua.Domain.Entities;
 

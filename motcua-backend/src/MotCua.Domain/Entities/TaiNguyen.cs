@@ -12,5 +12,7 @@ public class TaiNguyen
     public string ContentType { get; set; } = string.Empty;
     public long KichThuoc { get; set; }
     
+    public bool IsActive { get; set; } = true;
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

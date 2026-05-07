@@ -6,4 +6,5 @@ export const STATUS_MAP = {
   3: { label: 'Đang xử lý', color: 'text-indigo-600', badge: 'bg-indigo-100 text-indigo-800' },
   4: { label: 'Cần bổ sung', color: 'text-red-600', badge: 'bg-red-100 text-red-800' },
   5: { label: 'Đã hoàn thành', color: 'text-green-600', badge: 'bg-green-100 text-green-800' },
+  6: { label: 'Đã bổ sung', color: 'text-orange-600', badge: 'bg-orange-100 text-orange-800' },
 };

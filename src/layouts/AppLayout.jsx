@@ -1,6 +1,4 @@
 
-// LAYOUTS: AppLayout — Wrapper layout chung
-
 import React from 'react';
 
 /**

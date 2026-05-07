@@ -1,4 +1,4 @@
-// QUẢN LÝ TRẠNG THÁI DỮ LIỆU 
+// QUẢN LÝ TRẠNG THÁI DỮ LIỆU , quản lý trạng thái toàn hệ thống
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import * as motcuaService from '../services/motcuaService';
@@ -84,9 +84,14 @@ export function useMotCuaSystem() {
 
 
   // Xử lý tạo mới yêu cầu cho sinh viên
+  // attachedFiles là mảng File objects, cần upload lên server trước
   const createRequest = async (serviceType, attachedFiles) => {
     try {
-      await motcuaService.createStudentRequest(serviceType, attachedFiles);
+      // Upload từng file lên server, nhận về tên file unique
+      const uploadedNames = await Promise.all(
+        attachedFiles.map((f) => motcuaService.uploadFile(f))
+      );
+      await motcuaService.createStudentRequest(serviceType, uploadedNames);
       await refreshData('STUDENT');
       return true;
     } catch (error) {
@@ -107,11 +112,15 @@ export function useMotCuaSystem() {
     }
   };
 
-  // Xử lý luồng sinh viên gửi lại khi bị từ chối
-  // Xử lý luồng sinh viên gửi lại yêu cầu khi bị cán bộ từ chối (bổ sung)
+  // Xử lý luồng sinh viên gửi lại yêu cầu khi bị cán bộ yêu cầu bổ sung
+  // files là mảng File objects, cần upload lên server trước
   const resubmitRequest = async (id, files = []) => {
     try {
-      await motcuaService.resubmitRequest(id, files);
+      // Upload từng file lên server, nhận về tên file unique
+      const uploadedNames = await Promise.all(
+        files.map((f) => motcuaService.uploadFile(f))
+      );
+      await motcuaService.resubmitRequest(id, uploadedNames);
       await refreshData('STUDENT');
     } catch (error) {
       alert(error.message);

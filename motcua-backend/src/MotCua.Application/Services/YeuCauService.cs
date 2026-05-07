@@ -111,6 +111,7 @@ public class YeuCauService : IYeuCauService
             .ToList();
 
         response.Files = x.TaiNguyens
+            .Where(f => f.IsActive)
             .Select(f => new FileResponse
             {
                 Id = f.Id,
@@ -133,7 +134,10 @@ public class YeuCauService : IYeuCauService
         if (yc == null || yc.SinhVienId != sinhVienId) throw new Exception("Yêu cầu không hợp lệ.");
         if (yc.TrangThai != TrangThaiYeuCau.CAN_BO_SUNG) throw new Exception("Chỉ gửi lại khi trạng thái là cần bổ sung.");
 
-        await _yeuCauRepository.UpdateStatusAsync(id, (int)TrangThaiYeuCau.SV_GUI);
+        await _yeuCauRepository.UpdateStatusAsync(id, (int)TrangThaiYeuCau.DA_BO_SUNG);
+
+        // Deactivate file cũ trước khi thêm file bổ sung
+        await _yeuCauRepository.DeactivateTaiNguyensAsync(id);
         
         if (attachedFiles != null && attachedFiles.Any())
         {
@@ -162,7 +166,7 @@ public class YeuCauService : IYeuCauService
     {
         var yc = await _yeuCauRepository.GetByIdAsync(id);
         if (yc == null) throw new Exception("Không tìm thấy yêu cầu.");
-        if (yc.TrangThai != TrangThaiYeuCau.SV_GUI && yc.TrangThai != TrangThaiYeuCau.MOT_CUA_NHAN)
+        if (yc.TrangThai != TrangThaiYeuCau.SV_GUI && yc.TrangThai != TrangThaiYeuCau.MOT_CUA_NHAN && yc.TrangThai != TrangThaiYeuCau.DA_BO_SUNG)
             throw new Exception("Trạng thái không hợp lệ.");
 
         await _yeuCauRepository.UpdateStatusAsync(id, (int)TrangThaiYeuCau.MOT_CUA_DANG_XU_LY);
@@ -179,7 +183,7 @@ public class YeuCauService : IYeuCauService
     {
         var yc = await _yeuCauRepository.GetByIdAsync(id);
         if (yc == null) throw new Exception("Không tìm thấy yêu cầu.");
-        if (yc.TrangThai != TrangThaiYeuCau.MOT_CUA_NHAN && yc.TrangThai != TrangThaiYeuCau.SV_GUI)
+        if (yc.TrangThai != TrangThaiYeuCau.MOT_CUA_NHAN && yc.TrangThai != TrangThaiYeuCau.SV_GUI && yc.TrangThai != TrangThaiYeuCau.DA_BO_SUNG)
             throw new Exception("Trạng thái không hợp lệ.");
 
         await _yeuCauRepository.UpdateStatusAsync(id, (int)TrangThaiYeuCau.MOT_CUA_DANG_XU_LY);
@@ -196,7 +200,7 @@ public class YeuCauService : IYeuCauService
     {
         var yc = await _yeuCauRepository.GetByIdAsync(id);
         if (yc == null) throw new Exception("Không tìm thấy yêu cầu.");
-        if (yc.TrangThai != TrangThaiYeuCau.SV_GUI && yc.TrangThai != TrangThaiYeuCau.MOT_CUA_NHAN && yc.TrangThai != TrangThaiYeuCau.MOT_CUA_DANG_XU_LY)
+        if (yc.TrangThai != TrangThaiYeuCau.SV_GUI && yc.TrangThai != TrangThaiYeuCau.MOT_CUA_NHAN && yc.TrangThai != TrangThaiYeuCau.MOT_CUA_DANG_XU_LY && yc.TrangThai != TrangThaiYeuCau.DA_BO_SUNG)
             throw new Exception("Trạng thái không hợp lệ.");
 
         await _yeuCauRepository.UpdateStatusAsync(id, (int)TrangThaiYeuCau.CAN_BO_SUNG);
@@ -287,7 +291,7 @@ public class YeuCauService : IYeuCauService
         response.TrangThai = x.TrangThai;
         response.Status = (int)x.TrangThai;
         response.CreatedAt = x.CreatedAt;
-        response.AttachedFiles = x.TaiNguyens.Select(t => t.TenFile).ToList();
+        response.AttachedFiles = x.TaiNguyens.Where(t => t.IsActive).Select(t => t.TenFile).ToList();
     }
 
     private static PhanHoiResponse MapPhanHoi(PhanHoiYeuCau p)

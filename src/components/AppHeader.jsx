@@ -1,6 +1,4 @@
 
-// COMPONENTS: AppHeader — Header chung của toàn ứng dụng
-
 import React from 'react';
 import { Phone, Mail } from 'lucide-react';
 import { ASSETS } from '../constants/assets';

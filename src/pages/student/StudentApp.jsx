@@ -20,28 +20,28 @@ const StudentApp = ({ db, user, sysAPI }) => {
   const [resubmitFiles, setResubmitFiles] = useState([]);
 
 
-  // Xử lý thêm file minh chứng khi sinh viên upload.
+  // Xử lý thêm file minh chứng khi sinh viên upload — lưu File object thật.
   const handleFileChange = (e) => {
     if (e.target.files.length) {
-      const newFiles = Array.from(e.target.files).map((f) => f.name);
+      const newFiles = Array.from(e.target.files);
       setFiles((prev) => [...prev, ...newFiles]);
     }
   };
 
   // Xóa file khỏi danh sách minh chứng đã chọn.
   const removeFile = (fileName) => {
-    setFiles((prev) => prev.filter((f) => f !== fileName));
+    setFiles((prev) => prev.filter((f) => f.name !== fileName));
   };
-  // Xử lý upload file bổ sung khi hồ sơ bị yêu cầu chỉnh sửa.
+  // Xử lý upload file bổ sung khi hồ sơ bị yêu cầu chỉnh sửa — lưu File object thật.
   const handleResubmitFileChange = (e) => {
     if (e.target.files.length) {
-      const newFiles = Array.from(e.target.files).map((f) => f.name);
+      const newFiles = Array.from(e.target.files);
       setResubmitFiles((prev) => [...prev, ...newFiles]);
     }
   };
   // Xóa một file khỏi danh sách bổ sung.
   const removeResubmitFile = (fileName) => {
-    setResubmitFiles((prev) => prev.filter((f) => f !== fileName));
+    setResubmitFiles((prev) => prev.filter((f) => f.name !== fileName));
   };
   // Gửi yêu cầu mới lên hệ thống và hiển thị thông báo kết quả.
   const handleSubmit = async () => {
@@ -220,7 +220,7 @@ const StudentApp = ({ db, user, sysAPI }) => {
                             className="flex flex-col items-center gap-1 bg-indigo-50 p-2 rounded border border-indigo-100 relative group min-w-[80px]"
                           >
                             <button
-                              onClick={() => removeFile(f)}
+                              onClick={() => removeFile(f.name)}
                               className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hidden group-hover:block shadow"
                             >
                               <X size={12} />
@@ -228,9 +228,9 @@ const StudentApp = ({ db, user, sysAPI }) => {
                             <FileText size={24} className="text-indigo-500" />
                             <span
                               className="text-indigo-700 font-medium text-xs max-w-[100px] truncate"
-                              title={f}
+                              title={f.name}
                             >
-                              {f}
+                              {f.name}
                             </span>
                           </div>
                         ))}
@@ -412,9 +412,9 @@ const StudentApp = ({ db, user, sysAPI }) => {
                           className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded border text-xs"
                         >
                           <FileText size={12} className="text-gray-500" />
-                          <span className="max-w-[100px] truncate text-gray-700" title={f}>{f}</span>
+                          <span className="max-w-[100px] truncate text-gray-700" title={f.name}>{f.name}</span>
                           <button
-                            onClick={() => removeResubmitFile(f)}
+                            onClick={() => removeResubmitFile(f.name)}
                             className="text-red-500 hover:text-red-700 ml-1"
                           >
                             <X size={12} />

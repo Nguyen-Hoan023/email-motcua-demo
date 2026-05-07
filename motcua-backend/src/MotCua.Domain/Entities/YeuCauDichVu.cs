@@ -1,3 +1,5 @@
+//ĐỊNH NGHĨA CẤU TRÚC YÊU CẦU
+
 using MotCua.Domain.Enums;
 
 namespace MotCua.Domain.Entities;

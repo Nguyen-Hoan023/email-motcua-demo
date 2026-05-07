@@ -33,9 +33,9 @@ public class FileController : ControllerBase
     [HttpGet("{fileName}")]
     public async Task<IActionResult> Get(string fileName)
     {
-        var stream = await _fileStorageService.GetFileAsync(fileName);
+        var (stream, contentType) = await _fileStorageService.GetFileWithTypeAsync(fileName);
         if (stream == null) return NotFound();
 
-        return File(stream, "application/octet-stream"); // Consider determining correct MIME type
+        return File(stream, contentType);
     }
 }

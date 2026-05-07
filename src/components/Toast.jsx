@@ -1,6 +1,4 @@
 
-// COMPONENTS: Toast — Thông báo toast (bonus)
-
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 

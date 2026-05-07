@@ -12,4 +12,5 @@ public interface IYeuCauRepository
     Task AddLogAsync(LogYeuCauDichVu log);
     Task AddPhanHoiAsync(PhanHoiYeuCau phanHoi);
     Task AddTaiNguyenAsync(TaiNguyen taiNguyen);
+    Task DeactivateTaiNguyensAsync(Guid yeuCauId);
 }

@@ -54,13 +54,6 @@ app.UseSwaggerUI();
 
 app.UseCors("AllowReactApp");
 
-// Endpoint phục vụ file đính kèm cho cán bộ xem
-app.MapGet("/api/files/{filename}", async (string filename, IFileStorageService fileStorage) =>
-{
-    var (stream, contentType) = await fileStorage.GetFileWithTypeAsync(filename);
-    if (stream == null) return Results.NotFound();
-    return Results.File(stream, contentType);
-});
 
 app.MapControllers();
 

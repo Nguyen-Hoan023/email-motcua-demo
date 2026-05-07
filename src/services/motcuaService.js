@@ -50,6 +50,7 @@ const normalizeStatus = (value) => {
     MOT_CUA_DANG_XU_LY: 3,
     CAN_BO_SUNG: 4,
     DA_HOAN_THANH: 5,
+    DA_BO_SUNG: 6,
   };
   return map[value] || 1;
 };
@@ -232,4 +233,20 @@ export const resubmitRequest = async (id, files = []) => {
     body: JSON.stringify({ attachedFiles: files }),
   });
   return true;
+};
+
+// Upload file thật lên server và nhận về tên file unique từ server.
+export const uploadFile = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await fetch(`${API_ROOT}/files/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Upload file thất bại');
+  }
+  const data = await response.json();
+  return data.tenFile; // Tên file unique trên server (có GUID prefix)
 };

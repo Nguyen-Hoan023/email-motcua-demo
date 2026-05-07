@@ -80,4 +80,11 @@ public class YeuCauRepository : IYeuCauRepository
         _context.TaiNguyens.Add(taiNguyen);
         await _context.SaveChangesAsync();
     }
+
+    public async Task DeactivateTaiNguyensAsync(Guid yeuCauId)
+    {
+        await _context.TaiNguyens
+            .Where(t => t.YeuCauId == yeuCauId && t.IsActive)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.IsActive, false));
+    }
 }

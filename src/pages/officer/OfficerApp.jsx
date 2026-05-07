@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, FileText, CheckCircle, File, X, User, Mail, Computer, KeyRound, ShieldAlert } from 'lucide-react';
 import AppHeader from '../../components/AppHeader';
 import { STATUS_MAP } from '../../constants/statusMap';
-import { getFileExtension } from '../../utils/fileUtils';
+import { getFileExtension, getDisplayFileName } from '../../utils/fileUtils';
 import { getAccountMeta, ACCOUNT_TYPE_ORDER } from '../../constants/accountTypes';
 
 // Hàm sinh mật khẩu ngầm 
@@ -325,7 +325,7 @@ const OfficerApp = ({ db, sysAPI }) => {
                       onClick={() => setViewingFile(f)}
                       className="text-blue-600 font-medium hover:underline flex items-center gap-1 transition bg-white px-3 py-1.5 rounded border border-blue-200 shadow-sm hover:bg-blue-50"
                     >
-                      <FileText size={16} /> <span className="max-w-[200px] truncate">{f}</span>
+                      <FileText size={16} /> <span className="max-w-[200px] truncate">{getDisplayFileName(f)}</span>
                     </button>
                   ))}
                 </div>
@@ -380,7 +380,7 @@ const OfficerApp = ({ db, sysAPI }) => {
             </div>
           </section>
 
-          {(req.status === 1 || req.status === 2) && (
+          {(req.status === 1 || req.status === 2 || req.status === 6) && (
             <div className="grid grid-cols-2 gap-6 border-t pt-6">
               <div className="bg-white border rounded p-6 shadow-sm text-center flex flex-col justify-between">
                 <div>
@@ -535,7 +535,7 @@ const OfficerApp = ({ db, sysAPI }) => {
           <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="flex justify-between items-center p-4 border-b">
               <h3 className="font-bold text-[#1e3a8a] flex items-center gap-2">
-                <FileText size={18} /> Chi tiết minh chứng: {viewingFile}
+                <FileText size={18} /> Chi tiết minh chứng: {getDisplayFileName(viewingFile)}
               </h3>
               <button
                 onClick={() => setViewingFile(null)}
