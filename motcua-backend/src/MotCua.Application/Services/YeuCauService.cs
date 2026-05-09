@@ -8,21 +8,25 @@ using MotCua.Domain.Enums;
 using MotCua.Domain.Interfaces;
 
 namespace MotCua.Application.Services;
+
 // Service trung tâm xử lý toàn bộ nghiệp vụ của yêu cầu dịch vụ.
 public class YeuCauService : IYeuCauService
 {
     private readonly IYeuCauRepository _yeuCauRepository;
     private readonly INguoiDungRepository _nguoiDungRepository;
     private readonly ITinNhanRepository _tinNhanRepository;
+    private readonly INotificationService _notificationService;
 
     public YeuCauService(
         IYeuCauRepository yeuCauRepository,
         INguoiDungRepository nguoiDungRepository,
-        ITinNhanRepository tinNhanRepository)
+        ITinNhanRepository tinNhanRepository,
+        INotificationService notificationService)
     {
         _yeuCauRepository = yeuCauRepository;
         _nguoiDungRepository = nguoiDungRepository;
         _tinNhanRepository = tinNhanRepository;
+        _notificationService = notificationService;
     }
 
        // Tạo yêu cầu mới, thêm file đính kèm, log khởi tạo và tin nhắn thông báo.
@@ -71,6 +75,8 @@ public class YeuCauService : IYeuCauService
             NoiDung = $"Yêu cầu mới từ {sv.HoTen}",
             TrangThai = TrangThaiTinNhan.PENDING
         });
+
+        await _notificationService.NotifyDataUpdateAsync();
 
         return yeuCau.Id;
     }
@@ -159,6 +165,8 @@ public class YeuCauService : IYeuCauService
             HanhDong = "Sinh viên/Cựu SV cập nhật hồ sơ",
             NguoiThucHienId = sinhVienId
         });
+
+        await _notificationService.NotifyDataUpdateAsync();
     }
 
     // Cập nhật trạng thái tiếp nhận và bắt đầu xử lý cho cán bộ
@@ -176,6 +184,8 @@ public class YeuCauService : IYeuCauService
             HanhDong = "Tiếp nhận & Bắt đầu xử lý",
             NguoiThucHienId = canBoId
         });
+
+        await _notificationService.NotifyDataUpdateAsync();
     }
 
     // Cán bộ bắt đầu xử lý yêu cầu sau khi đã tiếp nhận.
@@ -193,6 +203,8 @@ public class YeuCauService : IYeuCauService
             HanhDong = "Bắt đầu xử lý",
             NguoiThucHienId = canBoId
         });
+
+        await _notificationService.NotifyDataUpdateAsync();
     }
 
     // Chuyển trạng thái yêu cầu sang cần bổ sung và gửi phản hồi cho sinh viên
@@ -216,6 +228,8 @@ public class YeuCauService : IYeuCauService
             HanhDong = "Yêu cầu bổ sung",
             NguoiThucHienId = canBoId
         });
+
+        await _notificationService.NotifyDataUpdateAsync();
     }
 
     // Hoàn tất yêu cầu, lưu mật khẩu mới và tạo tin nhắn thông báo
@@ -256,6 +270,8 @@ public class YeuCauService : IYeuCauService
             NoiDung = content,
             TrangThai = TrangThaiTinNhan.PENDING
         });
+
+        await _notificationService.NotifyDataUpdateAsync();
     }
 
     
