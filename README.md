@@ -1,6 +1,6 @@
 # Hệ Thống Tiếp Nhận Yêu Cầu Một Cửa (MotCua Demo)
 
-Dự án mô phỏng quy trình tiếp nhận và xử lý yêu cầu cấp lại mật khẩu (Email, Microsoft Office, Cổng thông tin) dành cho Sinh viên và Cán bộ Một Cửa. Hệ thống được tách biệt thành 2 cổng Frontend độc lập (React + Vite) kết nối với 1 Backend chung (ASP.NET Core API).
+Dự án mô phỏng quy trình tiếp nhận và xử lý yêu cầu cấp lại mật khẩu (Email, Microsoft Office, Cổng thông tin) dành cho Sinh viên và Cán bộ Một Cửa. Hệ thống được tách biệt thành 2 cổng Frontend độc lập (Vue 3 + Vite + Pinia) kết nối với 1 Backend chung (ASP.NET Core API).
 
 ## Hướng Dẫn Chạy Dự Án
 
@@ -19,7 +19,6 @@ dotnet run
 Mở terminal 2 tại thư mục gốc và chạy:
 ```bash
 cd fe-sinhvien
-npm install
 npm run dev
 ```
 *   **Truy cập cổng Sinh Viên**: `http://localhost:3000`
@@ -28,7 +27,6 @@ npm run dev
 Mở terminal 3 tại thư mục gốc và chạy:
 ```bash
 cd fe-canbo
-npm install
 npm run dev
 ```
 *   **Truy cập cổng Cán Bộ**: `http://localhost:3001`
