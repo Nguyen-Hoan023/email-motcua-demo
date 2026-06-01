@@ -69,8 +69,8 @@ Hệ thống cung cấp giao diện Swagger để bạn có thể test trực ti
 2.  **Cán bộ (Port 3001)**: Nhận thông báo yêu cầu mới, nhấn **"Xử lý ngay"** để tiếp nhận.
 3.  **Xử lý kỹ thuật**: 
     *   Nếu hồ sơ thiếu: Cán bộ nhấn **"Yêu cầu bổ sung"**. Sinh viên sẽ thấy thông báo và gửi lại file.
-    *   Nếu hồ sơ chuẩn: Cán bộ chọn loại tài khoản cần reset, hệ thống sinh mật khẩu ngẫu nhiên.
-4.  **Hoàn tất**: Cán bộ nhấn **"Hoàn tất quy trình"**.
+    *   Nếu hồ sơ chuẩn: Cán bộ chọn loại tài khoản cần reset. Hệ thống (Backend) tự động sinh mật khẩu ngẫu nhiên an toàn (12 ký tự), thực hiện mã hóa bằng **BCrypt** để lưu trữ vào DB, đồng thời chuyển mật khẩu gốc vào nội dung phản hồi cho sinh viên.
+4.  **Hoàn tất**: Cán bộ xác nhận "Kích hoạt reset & Hoàn tất".
 5.  **Thông báo**: 
     *   Hệ thống chuyển trạng thái về **"Đã hoàn thành"**.
     *   Background Worker tự động quét và gửi Email mật khẩu mới cho sinh viên.
