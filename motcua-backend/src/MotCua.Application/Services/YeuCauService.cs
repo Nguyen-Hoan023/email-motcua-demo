@@ -1,5 +1,6 @@
 
 
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using MotCua.Application.DTOs.YeuCau;
 using MotCua.Application.Interfaces;
@@ -232,7 +233,7 @@ public class YeuCauService : IYeuCauService
         await _notificationService.NotifyDataUpdateAsync();
     }
 
-    // Hoàn tất yêu cầu, lưu mật khẩu mới và tạo tin nhắn thông báo
+    // Hoàn tất yêu cầu: sinh mật khẩu ngẫu nhiên, hash BCrypt, lưu vào DB, trả kết quả cho SV.
     public async Task HoanTatAsync(Guid id, HoanTatRequest request, Guid canBoId)
     {
         var yc = await _yeuCauRepository.GetByIdAsync(id);
@@ -242,11 +243,17 @@ public class YeuCauService : IYeuCauService
 
         var accountType = string.IsNullOrWhiteSpace(request.AccountType) ? "EMAIL" : request.AccountType!;
         var accountLabel = ResolveAccountLabel(accountType, request.AccountLabel);
-        var password = request.MatKhauMoi ?? string.Empty;
+
+        // Sinh mật khẩu ngẫu nhiên tại server
+        var plainPassword = GenerateRandomPassword(12);
+
+        // Hash mật khẩu bằng BCrypt trước khi lưu vào DB
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+        await _nguoiDungRepository.UpdatePasswordAsync(yc.SinhVienId, accountType, hashedPassword);
 
         string content = request.PhuongThucXuLy == PhuongThucXuLy.AUTO
             ? "Hệ thống đã reset và gửi thông tin trực tiếp vào email cá nhân."
-            : $"Đã reset thành công {accountLabel}. Mật khẩu mới là: {password}. Vui lòng đổi MK ngay sau khi đăng nhập.";
+            : $"Đã reset thành công {accountLabel}. Mật khẩu mới là: {plainPassword}. Vui lòng đổi MK ngay sau khi đăng nhập.";
 
         await _yeuCauRepository.UpdateStatusAsync(id, (int)TrangThaiYeuCau.DA_HOAN_THANH);
         await _yeuCauRepository.AddPhanHoiAsync(new PhanHoiYeuCau
@@ -308,6 +315,11 @@ public class YeuCauService : IYeuCauService
         response.Status = (int)x.TrangThai;
         response.CreatedAt = x.CreatedAt;
         response.AttachedFiles = x.TaiNguyens.Where(t => t.IsActive).Select(t => t.TenFile).ToList();
+        
+        // Thông tin tài khoản sinh viên
+        response.EmailSinhVien = x.SinhVien?.Email ?? string.Empty;
+        response.TaiKhoanMicrosoft = sv?.TaiKhoanMicrosoft ?? string.Empty;
+        response.TaiKhoanCongSV = sv?.TaiKhoanCongSV ?? string.Empty;
     }
 
     private static PhanHoiResponse MapPhanHoi(PhanHoiYeuCau p)
@@ -364,5 +376,18 @@ public class YeuCauService : IYeuCauService
         if (normalized.Contains("office") || normalized.Contains("microsoft")) return "OFFICE";
         if (normalized.Contains("cổng") || normalized.Contains("portal")) return "PORTAL";
         return "EMAIL";
+    }
+
+    // Sinh mật khẩu ngẫu nhiên an toàn bằng cryptographic random.
+    private static string GenerateRandomPassword(int length = 12)
+    {
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%";
+        var result = new char[length];
+        var randomBytes = RandomNumberGenerator.GetBytes(length);
+        for (int i = 0; i < length; i++)
+        {
+            result[i] = chars[randomBytes[i] % chars.Length];
+        }
+        return new string(result);
     }
 }

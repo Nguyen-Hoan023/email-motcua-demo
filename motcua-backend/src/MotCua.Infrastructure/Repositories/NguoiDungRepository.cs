@@ -33,4 +33,28 @@ public class NguoiDungRepository : INguoiDungRepository
         await _context.NguoiDungs.AddAsync(user);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdatePasswordAsync(Guid sinhVienId, string accountType, string hashedPassword)
+    {
+        switch (accountType.ToUpperInvariant())
+        {
+            case "EMAIL":
+                await _context.SinhViens
+                    .Where(x => x.Id == sinhVienId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(x => x.MatKhauEmail, hashedPassword));
+                break;
+            case "OFFICE":
+                await _context.SinhViens
+                    .Where(x => x.Id == sinhVienId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(x => x.MatKhauOffice, hashedPassword));
+                break;
+            case "PORTAL":
+                await _context.SinhViens
+                    .Where(x => x.Id == sinhVienId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(x => x.MatKhauPortal, hashedPassword));
+                break;
+            default:
+                throw new ArgumentException($"Loại tài khoản không hợp lệ: {accountType}");
+        }
+    }
 }

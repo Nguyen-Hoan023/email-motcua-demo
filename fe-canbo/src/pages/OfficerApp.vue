@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { ArrowLeft, FileText, CheckCircle, File as FileIcon, X, User, Mail, Computer, KeyRound, ShieldAlert } from 'lucide-vue-next';
+import { ArrowLeft, FileText, CheckCircle, File as FileIcon, X, User, Mail, Computer, KeyRound } from 'lucide-vue-next';
 import AppHeader from '../components/AppHeader.vue';
 import { STATUS_MAP } from '../constants/statusMap';
 import { getFileExtension, getDisplayFileName } from '../utils/fileUtils';
@@ -11,12 +11,6 @@ const props = defineProps({
   sysAPI: Object
 });
 
-const generateRandomPassword = (length = 10) => {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%';
-  const array = new Uint32Array(length);
-  crypto.getRandomValues(array);
-  return Array.from(array, (n) => chars[n % chars.length]).join('');
-};
 
 const ACCOUNT_ICON = {
   EMAIL: Mail,
@@ -32,8 +26,6 @@ const rejectReason = ref('');
 const viewingFile = ref(null);
 
 const selectedAccountType = ref(null);
-const isResetActivated = ref(false);
-const generatedPassword = ref('');
 
 const req = computed(() => {
   return props.db.YeuCauDichVu.find((r) => String(r.id) === String(activeReqId.value));
@@ -52,56 +44,42 @@ const studentProfile = computed(() => {
 watch(req, (newReq) => {
   if (!newReq) {
     selectedAccountType.value = null;
-    isResetActivated.value = false;
-    generatedPassword.value = '';
     rejectReason.value = '';
   }
 });
 
 const handleSelectAccount = (accountType) => {
-  if (isResetActivated.value) return;
   selectedAccountType.value = accountType;
-  isResetActivated.value = false;
-  generatedPassword.value = '';
 };
 
-const handleActivateReset = () => {
-  const newPwd = generateRandomPassword(12);
-  generatedPassword.value = newPwd;
-  isResetActivated.value = true;
-};
-
-const handleComplete = async () => {
-  if (!isResetActivated.value) return;
+const handleActivateReset = async () => {
+  if (!selectedAccountType.value) return;
 
   const meta = getAccountMeta(selectedAccountType.value);
   await props.sysAPI.processRequest(req.value.id, 'COMPLETE', {
-    password: generatedPassword.value,
     accountType: selectedAccountType.value,
     accountLabel: meta.label,
   });
 
   activeReqId.value = null;
   selectedAccountType.value = null;
-  isResetActivated.value = false;
-  generatedPassword.value = '';
 };
 
 const accounts = computed(() => {
-  return studentProfile.value?.accounts || {
+  return {
     EMAIL: {
       label: 'Email Sinh Viên',
-      username: `${req.value?.studentId}@st.huce.edu.vn`,
+      username: req.value?.emailSinhVien || `${req.value?.studentId}@st.huce.edu.vn`,
       note: 'Tài khoản email nội bộ của sinh viên.',
     },
     OFFICE: {
       label: 'Microsoft Office',
-      username: `${req.value?.studentId}@st.huce.edu.vn`,
+      username: req.value?.taiKhoanMicrosoft || `${req.value?.studentId}@st.huce.edu.vn`,
       note: 'Tài khoản Office 365 của sinh viên.',
     },
     PORTAL: {
       label: 'Cổng sinh viên',
-      username: req.value?.studentId,
+      username: req.value?.taiKhoanCongSV || req.value?.studentId,
       note: 'Tài khoản cổng sinh viên dùng MSSV làm đăng nhập.',
     },
   };
@@ -337,12 +315,12 @@ const getExpectedType = (serviceName, accountType) => {
               v-for="accountType in ACCOUNT_TYPE_ORDER"
               :key="accountType"
               @click="handleSelectAccount(accountType)"
-              :disabled="isResetActivated || !getExpectedType(req.serviceName, accountType)"
+              :disabled="!getExpectedType(req.serviceName, accountType)"
               :class="[
                 'text-left rounded-xl border p-4 transition relative',
                 selectedAccountType === accountType
                   ? 'border-blue-500 ring-2 ring-blue-100 bg-blue-50'
-                  : (isResetActivated || !getExpectedType(req.serviceName, accountType))
+                  : (!getExpectedType(req.serviceName, accountType))
                     ? 'border-gray-200 bg-gray-100 opacity-50 cursor-not-allowed'
                     : 'border-gray-200 bg-gray-50 hover:bg-white border-blue-200'
               ]"
@@ -355,41 +333,17 @@ const getExpectedType = (serviceName, accountType) => {
             </button>
           </div>
 
-          <div v-if="selectedAccountType && !isResetActivated" class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-between">
+          <div v-if="selectedAccountType" class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-between">
             <div>
               <h5 class="font-bold text-yellow-800">Xác nhận thao tác</h5>
               <p class="text-sm text-yellow-700">Tài khoản chuẩn bị reset: <strong>{{ getAccountMeta(selectedAccountType).label }}</strong></p>
+              <p class="text-xs text-yellow-600 mt-1">Hệ thống sẽ tự sinh mật khẩu mới và lưu vào cơ sở dữ liệu.</p>
             </div>
             <button
               @click="handleActivateReset"
-              class="bg-yellow-600 text-white px-6 py-2 rounded font-bold hover:bg-yellow-700 transition shadow-sm"
+              class="bg-[#10b981] text-white px-6 py-2 rounded font-bold hover:bg-green-600 transition shadow-sm flex items-center gap-2"
             >
-              KÍCH HOẠT RESET
-            </button>
-          </div>
-
-          <div v-if="isResetActivated" class="mt-4 p-4 rounded-lg border border-green-200 bg-green-50">
-            <div class="flex items-start gap-3">
-              <ShieldAlert class="text-green-600 mt-1" :size="24" />
-              <div>
-                <h5 class="font-bold text-green-800">
-                  Đã kích hoạt Reset thành công tài khoản {{ getAccountMeta(selectedAccountType).label }}.
-                </h5>
-                <p class="text-sm text-green-700 mt-2 leading-relaxed">
-                  Hệ thống đã kích hoạt mật khẩu mới.
-                  <br />Hãy nhấm "Hoàn tất quy trình", kết thúc quy trình.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-end mt-6 border-t pt-6">
-            <button
-              @click="handleComplete"
-              class="bg-[#10b981] text-white px-8 py-3 rounded font-bold flex items-center gap-2 hover:bg-green-600 shadow disabled:opacity-50 disabled:cursor-not-allowed transition"
-              :disabled="!isResetActivated"
-            >
-              <CheckCircle :size="20" /> HOÀN TẤT QUY TRÌNH
+              <CheckCircle :size="20" /> KÍCH HOẠT RESET & HOÀN TẤT
             </button>
           </div>
         </div>

@@ -9,6 +9,7 @@ export const ASSETS = {
       authBackground:
         'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1920&q=80',
       studentBackground: `${import.meta.env.BASE_URL}images/sinh viên login.jpg`,
+      serviceBanner: `${import.meta.env.BASE_URL}images/banner-dichvu.png`,
     },
     cards: {
       studentAuth: `${import.meta.env.BASE_URL}images/sinh viên login.jpg`,

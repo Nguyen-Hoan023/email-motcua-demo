@@ -19,4 +19,9 @@ public class YeuCauResponse
     public int Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<string> AttachedFiles { get; set; } = new List<string>();
+    
+    // Thông tin tài khoản sinh viên
+    public string EmailSinhVien { get; set; } = string.Empty;
+    public string TaiKhoanMicrosoft { get; set; } = string.Empty;
+    public string TaiKhoanCongSV { get; set; } = string.Empty;
 }

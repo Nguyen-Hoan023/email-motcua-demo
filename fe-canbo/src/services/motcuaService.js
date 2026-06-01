@@ -50,6 +50,9 @@ const normalizeRequest = (r) => ({
   studentName: r.studentName ?? r.sinhVienName ?? r.hoTenSinhVien ?? '',
   lop: r.lop ?? '',
   khoa: r.khoa ?? '',
+  emailSinhVien: r.emailSinhVien ?? '',
+  taiKhoanMicrosoft: r.taiKhoanMicrosoft ?? '',
+  taiKhoanCongSV: r.taiKhoanCongSV ?? '',
   serviceName: r.serviceName ?? r.tenDichVu ?? '',
   status: normalizeStatus(r.status ?? r.trangThai ?? 1),
   createdAt: formatDateTime(r.createdAt ?? r.created_at ?? ''),
@@ -174,7 +177,6 @@ export const processOfficerRequest = async (id, actionType, payload = {}) => {
       endpoint = `${API_ROOT}/canbo/yeu-cau/${id}/hoan-tat`;
       body = {
         phuongThucXuLy: payload.method === 'auto' ? 1 : 0,
-        matKhauMoi: payload.password || '',
         accountType: payload.accountType || 'EMAIL',
         accountLabel: payload.accountLabel || accountLabelFromType(payload.accountType || 'EMAIL'),
       }; break;

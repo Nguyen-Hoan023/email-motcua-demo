@@ -124,11 +124,11 @@ const endReturnStr = computed(() => {
         </div>
       </div>
 
-      <div class="relative h-40 bg-gray-800 overflow-hidden">
+      <div class="relative h-40 bg-gray-900 overflow-hidden">
         <img
-          :src="ASSETS.images.banners.studentBackground"
+          :src="ASSETS.images.banners.serviceBanner"
           alt="Banner"
-          class="w-full h-full object-cover opacity-60 mix-blend-overlay grayscale"
+          class="w-full h-full object-cover opacity-60"
         />
         <div class="absolute inset-0 flex flex-col items-center justify-center">
           <h2 class="text-white text-3xl font-bold uppercase tracking-wide border-b-2 border-white pb-2 px-12">

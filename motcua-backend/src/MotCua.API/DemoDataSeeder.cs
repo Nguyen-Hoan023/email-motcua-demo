@@ -17,8 +17,8 @@ public static class DemoDataSeeder
         // Nên thử query đầy đủ các cột mới — nếu lỗi thì xóa và tạo lại.
         try
         {
-            // Thử query cả cột mới (Lop, Khoa) để phát hiện schema cũ
-            await db.SinhViens.Select(x => new { x.Id, x.Lop, x.Khoa }).FirstOrDefaultAsync();
+            // Thử query cả cột mới (Lop, Khoa, MatKhauOffice, MatKhauPortal) để phát hiện schema cũ
+            await db.SinhViens.Select(x => new { x.Id, x.Lop, x.Khoa, x.MatKhauOffice, x.MatKhauPortal }).FirstOrDefaultAsync();
         }
         catch
         {
@@ -26,6 +26,9 @@ public static class DemoDataSeeder
             await db.Database.EnsureDeletedAsync();
             await db.Database.EnsureCreatedAsync();
         }
+
+        // Mật khẩu mặc định cho demo, hash bằng BCrypt
+        var defaultPasswordHash = BCrypt.Net.BCrypt.HashPassword("Huce@2024");
 
         // Seed sinh viên mặc định: 0009167
         var student = await db.SinhViens.FirstOrDefaultAsync(x => x.Id == DemoUsers.StudentId || x.MaSinhVien == DemoUsers.StudentCode);
@@ -50,6 +53,9 @@ public static class DemoDataSeeder
         student.MaSinhVien = DemoUsers.StudentCode;
         student.Lop = "67CNCS";
         student.Khoa = "Công nghệ thông tin";
+        student.MatKhauEmail = defaultPasswordHash;
+        student.MatKhauOffice = defaultPasswordHash;
+        student.MatKhauPortal = defaultPasswordHash;
         student.TaiKhoanMicrosoft = DemoUsers.StudentOfficeAccount;
         student.TaiKhoanCongSV = DemoUsers.StudentCode;
 
