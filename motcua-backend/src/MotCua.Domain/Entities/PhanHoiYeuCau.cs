@@ -12,6 +12,8 @@ public class PhanHoiYeuCau
     public LoaiNguoiDung NguoiGuiType { get; set; }
     public string NoiDung { get; set; } = string.Empty;
     public PhuongThucXuLy? PhuongThucXuLy { get; set; }
+    public string? MatKhauTamThoi { get; set; }
+    public string? AccountLabel { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

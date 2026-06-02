@@ -70,17 +70,17 @@ const accounts = computed(() => {
     EMAIL: {
       label: 'Email Sinh Viên',
       username: req.value?.emailSinhVien || `${req.value?.studentId}@st.huce.edu.vn`,
-      note: 'Tài khoản email nội bộ của sinh viên.',
+      note: 'Tài khoản email.',
     },
     OFFICE: {
       label: 'Microsoft Office',
       username: req.value?.taiKhoanMicrosoft || `${req.value?.studentId}@st.huce.edu.vn`,
-      note: 'Tài khoản Office 365 của sinh viên.',
+      note: 'Tài khoản Office 365.',
     },
     PORTAL: {
       label: 'Cổng sinh viên',
       username: req.value?.taiKhoanCongSV || req.value?.studentId,
-      note: 'Tài khoản cổng sinh viên dùng MSSV làm đăng nhập.',
+      note: 'Tài khoản cổng sinh viên.',
     },
   };
 });
@@ -337,7 +337,6 @@ const getExpectedType = (serviceName, accountType) => {
             <div>
               <h5 class="font-bold text-yellow-800">Xác nhận thao tác</h5>
               <p class="text-sm text-yellow-700">Tài khoản chuẩn bị reset: <strong>{{ getAccountMeta(selectedAccountType).label }}</strong></p>
-              <p class="text-xs text-yellow-600 mt-1">Hệ thống sẽ tự sinh mật khẩu mới và lưu vào cơ sở dữ liệu.</p>
             </div>
             <button
               @click="handleActivateReset"

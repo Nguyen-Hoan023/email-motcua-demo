@@ -67,16 +67,6 @@ const accountLabelFromType = (accountType) => {
   const meta = getAccountMeta(accountType);
   return meta?.label || 'Tài khoản Email';
 };
-// Tách mật khẩu mới từ nội dung phản hồi.
-const extractPassword = (content = '') => {
-  const match = String(content).match(/Mật khẩu mới (?:là|của bạn là):\s*([^\.]+)/i);
-  return match ? match[1].trim() : '';
-};
-// Tách tên tài khoản từ nội dung phản h
-const extractAccountLabel = (content = '') => {
-  const match = String(content).match(/Đã reset thành công\s*([^\.]+)\./i);
-  return match ? match[1].trim() : '';
-};
 // Chuẩn hóa dữ liệu phản hồi từ backend.
 const normalizePhanHoi = (ph, fallbackReqId = '') => {
   const content = ph.content ?? ph.noiDung ?? '';
@@ -88,8 +78,8 @@ const normalizePhanHoi = (ph, fallbackReqId = '') => {
     content,
     resetMethod: ph.resetMethod ?? (ph.phuongThucXuLy === 1 ? 'auto' : 'manual'),
     accountType,
-    accountLabel: ph.accountLabel || extractAccountLabel(content) || (accountType ? accountLabelFromType(accountType) : undefined),
-    password: ph.password || extractPassword(content),
+    accountLabel: ph.accountLabel || (accountType ? accountLabelFromType(accountType) : undefined),
+    password: ph.password || '',
     createdAt: formatDateTime(ph.createdAt ?? ''),
   };
 };

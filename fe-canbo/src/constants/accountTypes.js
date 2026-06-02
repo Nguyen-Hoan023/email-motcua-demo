@@ -6,19 +6,19 @@ export const ACCOUNT_TYPE_META = {
   EMAIL: {
     type: 'EMAIL',
     label: 'Email',
-    description: 'Reset mật khẩu email ',
+    description: 'Reset mật khẩu tài khoản email ',
     usernameKey: 'email',
   },
   OFFICE: {
     type: 'OFFICE',
     label: 'Microsoft Office',
-    description: 'Reset tài khoản Microsoft Office 365',
+    description: 'Reset mật khẩu tài khoản Microsoft Office 365',
     usernameKey: 'office',
   },
   PORTAL: {
     type: 'PORTAL',
     label: 'Cổng sinh viên',
-    description: 'Reset tài khoản cổng sinh viên',
+    description: 'Reset mật khẩu tài khoản cổng sinh viên',
     usernameKey: 'portal',
   },
 };

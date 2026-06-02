@@ -17,8 +17,9 @@ public static class DemoDataSeeder
         // Nên thử query đầy đủ các cột mới — nếu lỗi thì xóa và tạo lại.
         try
         {
-            // Thử query cả cột mới (Lop, Khoa, MatKhauOffice, MatKhauPortal) để phát hiện schema cũ
+            // Thử query cả cột mới để phát hiện schema cũ
             await db.SinhViens.Select(x => new { x.Id, x.Lop, x.Khoa, x.MatKhauOffice, x.MatKhauPortal }).FirstOrDefaultAsync();
+            await db.PhanHoiYeuCaus.Select(x => new { x.Id, x.MatKhauTamThoi, x.AccountLabel }).FirstOrDefaultAsync();
         }
         catch
         {
